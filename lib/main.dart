@@ -18,7 +18,7 @@ class OptiFitApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => OptiFitAppState(),
       child: MaterialApp(
-        title: 'OptiFit',
+        title: 'OptiFit App',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
