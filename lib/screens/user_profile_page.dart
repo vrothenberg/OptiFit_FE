@@ -140,12 +140,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
     heightController = TextEditingController(text: userProfile.height?.toString() ?? '');
     weightController = TextEditingController(text: userProfile.weight?.toString() ?? '');
     chronotypeController = TextEditingController(text: userProfile.chronotype ?? '');
-    sleepTimeController = TextEditingController(text: userProfile.sleepTime?.format(context) ?? '');
-    wakeTimeController = TextEditingController(text: userProfile.wakeTime?.format(context) ?? '');
+    sleepTimeController = TextEditingController(
+      text: userProfile.sleepTime != null ? '' : '');
+    wakeTimeController = TextEditingController(
+      text: userProfile.wakeTime != null ? '' : '');
     locationController = TextEditingController(text: userProfile.location ?? '');
     fitnessGoalsController = TextEditingController(text: userProfile.fitnessGoals);
     dietaryPreferencesController = TextEditingController(text: userProfile.dietaryPreferences);
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userProfile = getDummyUserProfile();
+    
+    // Only update if sleepTime and wakeTime are available.
+    if (userProfile.sleepTime != null) {
+      sleepTimeController.text = userProfile.sleepTime!.format(context);
+    }
+    if (userProfile.wakeTime != null) {
+      wakeTimeController.text = userProfile.wakeTime!.format(context);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
