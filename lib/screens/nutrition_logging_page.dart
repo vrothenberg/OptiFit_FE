@@ -25,7 +25,7 @@ class FoodLogEntry {
 }
 
 class NutritionLoggingPage extends StatefulWidget {
-  const NutritionLoggingPage({Key? key}) : super(key: key);
+  const NutritionLoggingPage({super.key});
 
   @override
   _NutritionLoggingPageState createState() => _NutritionLoggingPageState();
@@ -43,8 +43,8 @@ class _NutritionLoggingPageState extends State<NutritionLoggingPage> {
         middle: const Text('Log Meal'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: const Text('Save'),
           onPressed: _saveLogs,
+          child: const Text('Save'),
         ),
       ),
       child: SafeArea(

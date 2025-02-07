@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart' show MaterialLocalizations, DefaultMaterialLocalizations;
 
 import 'screens/dashboard_page.dart';
 import 'screens/login/login_page.dart';
@@ -11,18 +12,27 @@ void main() {
 }
 
 class OptiFitApp extends StatelessWidget {
-  const OptiFitApp({Key? key}) : super(key: key);
+  const OptiFitApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => OptiFitAppState(),
-      child: MaterialApp(
+      child: CupertinoApp(
         title: 'OptiFit App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        theme: CupertinoThemeData(
+          brightness: Brightness.light,
+          primaryColor: CupertinoColors.systemPurple,
         ),
+        localizationsDelegates: const [
+          DefaultCupertinoLocalizations.delegate,
+          DefaultMaterialLocalizations.delegate, // Add this
+          // GlobalMaterialLocalizations.delegate,  // Add this
+          DefaultWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', ''), // English
+        ],
         home: const MyHomePage(),
       ),
     );
@@ -44,7 +54,7 @@ class OptiFitAppState extends ChangeNotifier {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   MyHomePageState createState() => MyHomePageState();
@@ -65,52 +75,59 @@ class MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = const DashboardPage();
-        break;
       case 1:
         page = const NutritionLoggingPage();
-        break;
       case 2:
         page = const UserProfilePage();
-        break;
       default:
         throw UnimplementedError('no widget for \$selectedIndex');
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('OptiFit'),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('OptiFit'),
+        trailing: appState.isLoggedIn
+            ? CupertinoButton(
+                child: const Icon(CupertinoIcons.square_arrow_right),
+                onPressed: () {
+                  appState.logout();
+                  setState(() {
+                    selectedIndex = 0; // Reset to dashboard on logout
+                  });
+                })
+            : null,
       ),
-      body: Center(
-        child: page,
-      ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
-            label: 'Log Nutrition',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          if (!appState.isLoggedIn)
-            BottomNavigationBarItem(
-              icon: Icon(Icons.login),
-              label: 'Login',
+      child: SafeArea(
+        // Use a Column to lay out the tab bar and the page content
+        child: Column(
+          children: [
+            Expanded(
+              child: page, // Your main page content
             ),
-        ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Colors.green[800],
-        onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
+            CupertinoTabBar( // Place CupertinoTabBar *inside* the child
+              currentIndex: selectedIndex,
+              onTap: (index) {
+                setState(() {
+                  selectedIndex = index;
+                });
+              },
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.home),
+                  label: 'Dashboard',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.add_circled),
+                  label: 'Log Nutrition',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.person),
+                  label: 'Profile',
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

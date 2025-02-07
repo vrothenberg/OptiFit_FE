@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  const DashboardPage({super.key});
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
